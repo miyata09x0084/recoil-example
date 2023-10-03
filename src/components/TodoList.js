@@ -1,47 +1,21 @@
 import React from 'react';
-import { useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { todoListState } from '../atom';
 import TodoListStats from './TodoListStats';
+import TodoItemCreator from './TodoItemCreator';
+import TodoItem from './TodoItem';
 
 function TodoList() {
-    const [title, setTitle] = useState('');
-    const [todoList, setTodoList] = useRecoilState(todoListState);
-
-    const handleChange = (e) => {
-        setTitle(e.target.value);
-    };
-
-    let id = 1;
-    function getId() {
-        return id++;
-    };
-
-    const addItem = () => {
-        setTodoList((oldTodoList) => [
-          ...oldTodoList,
-          {
-            id: getId(),
-            title: title,
-            isComplete: false,
-          },
-        ]);
-        setTitle('');
-    };
+    const todoList = useRecoilValue(todoListState);
 
     return (
         <>
             <h1>RecoilによるTodoアプリ</h1>
             <TodoListStats />
-            <div>
-                <input type="text" value={title} onChange={handleChange} />
-                <button onClick={addItem}>Add</button>
-            </div>
-            <ul>
-                {todoList.map((item) => (
-                    <div key={item.id}>{item.title}</div>
-                ))}
-            </ul>
+            <TodoItemCreator />
+            {todoList.map((item) => (
+                <TodoItem key={item.id} item={item} />
+            ))}
         </>
     );
 }
